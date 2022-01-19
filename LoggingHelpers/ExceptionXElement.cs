@@ -52,13 +52,10 @@ namespace LoggingHelpers
                 // The root element is the Exception's type
                 Type exceptionType = exception.GetType();
                 XElement root = new XElement(XmlConvert.EncodeName(exceptionType.ToString()));
-                dynamic value = default;
 
                 if (exception.Message != null)
                 {
-                    //root.Add(new XElement("Message", exception.Message));
-                    value = exception.Message;
-                    Recurse(value, nameof(exception.Message), root, insertAttribute);
+                    Recurse((dynamic)exception.Message, nameof(exception.Message), root, insertAttribute);
                 }
 
                 // StackTrace can be null, e.g.:
@@ -71,22 +68,14 @@ namespace LoggingHelpers
                     //    let prettierFrame = ((frame?.Length > 6) ? frame.Substring(6).Trim() : String.Empty)
                     //    select new XElement("Frame", prettierFrame))
                     //);
-                    value = exception.StackTrace;
-                    Recurse(value, nameof(exception.StackTrace), root, insertAttribute);
+                    ;
+                    Recurse((dynamic)exception.StackTrace, nameof(exception.StackTrace), root, insertAttribute);
                 }
 
                 // Data is never null; it's empty if there is no data
                 if (exception.Data.Count > 0)
                 {
-                    //root.Add(
-                    //    new XElement("Data",
-                    //        from entry in exception.Data.Cast<DictionaryEntry>()
-                    //        let key = XmlConvert.EncodeName(entry.Key.ToString())
-                    //        let value = (entry.Value?.ToString() ?? "null")
-                    //        select new XElement(key, value))
-                    //);
-                    value = exception.Data;
-                    Recurse(value, nameof(exception.Data), root, insertElement);
+                    Recurse((dynamic)exception.Data, nameof(exception.Data), root, insertElement);
                 }
 
                 // Add the InnerException if it exists
@@ -98,8 +87,7 @@ namespace LoggingHelpers
                     //{
                     //    root.Add(new ExceptionXElement(ex, omitStackTrace));
                     //}
-                    value = aggregate.InnerExceptions;
-                    Recurse((IEnumerable)value, nameof(aggregate.InnerExceptions), root, insertAttribute);
+                    Recurse((dynamic)aggregate.InnerExceptions, nameof(aggregate.InnerExceptions), root, insertAttribute);
                 }
                 else if (exception.InnerException != null)
                 {
@@ -222,7 +210,7 @@ namespace LoggingHelpers
             foreach (var prop in obj.GetType().GetProperties())
             {
                 if (prop.IsSpecialName)
-                    break; // don't display specials
+                    continue; // don't display specials
                 dynamic val = prop.GetValue(obj);  // Must be dynamic for the double dispatch on the runtime type of the parameter
                 if (val != null)
                 {
@@ -261,7 +249,7 @@ namespace LoggingHelpers
             foreach (var prop in obj.GetType().GetProperties())
             {
                 if (prop.IsSpecialName)
-                    break; // don't display specials
+                    continue; // don't display specials
                 dynamic val = prop.GetValue(obj);  //Must be dynamc for the double dispatch on the runtime type of the parameter
                 if (val != null)
                 {
