@@ -17,7 +17,7 @@ namespace CoreTraceSource
             try
             {
                 // reminder: no stacktrace unless thrown
-                var oorex = new ArgumentOutOfRangeException("index", -1, "not at end");
+                var oorex = new ApplicationException("Application", new ArgumentOutOfRangeException("index", -1, "not at end"));
                 oorex.Data["foo"] = "bar";
                 AggregateException aggex = new AggregateException("both",
                     new System.IO.FileNotFoundException("missing file", "foo.bar"),
