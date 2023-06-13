@@ -239,12 +239,13 @@ namespace LoggingHelpers
         private static void Recurse(Exception obj, string name, XElement xe, Action<dynamic, string, XElement> op)
 
         {
-            if (string.IsNullOrEmpty(name))
+            XElement wrap = null;
+            if (!string.IsNullOrWhiteSpace(name))
             {
+                wrap = new XElement(name);
                 name = XmlConvert.EncodeName(obj.GetType().FullName);
             }
-
-            var elem = new XElement(name);
+            XElement elem = new XElement(name);
 
             foreach (var prop in obj.GetType().GetProperties())
             {
@@ -271,7 +272,8 @@ namespace LoggingHelpers
                 }
             }
 
-            xe.Add(elem);
+            wrap?.Add(elem);
+            xe.Add(wrap ?? elem);
         }
 
     }
