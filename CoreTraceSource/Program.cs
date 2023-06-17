@@ -25,7 +25,7 @@ namespace CoreTraceSource
                 );
                 aggex.Data["m"] = 5.01m;
                 aggex.Data["obj"] = new { title = "Anonymouse type", flag = true };
-                ts.TraceData(TraceEventType.Critical, 1, aggex);
+                ts.TraceData(TraceEventType.Critical, 1, DateTime.Now.ToString("o"), aggex);
                 ts.TraceData(TraceEventType.Critical, 2, (new LoggingHelpers.ExceptionXElement(aggex)).ToString());
                 ts.TraceData(TraceEventType.Critical, 3, LoggingHelpers.NavigateException.Navigate(aggex));
                 ts.TraceData(TraceEventType.Critical, 4, System.Text.Json.JsonSerializer.Serialize(aggex));
